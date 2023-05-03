@@ -1,0 +1,7 @@
+names:
+- license-plate
+- vehicle
+nc: 2
+path: C:\Users\Djmir\Desktop\BigDataIA\FinalProject\DetectorMatriculas\roboflow
+train: C:\Users\Djmir\Desktop\BigDataIA\FinalProject\DetectorMatriculas\roboflow/train/images
+val: C:\Users\Djmir\Desktop\BigDataIA\FinalProject\DetectorMatriculas\roboflow/valid/images
