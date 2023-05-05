@@ -7,8 +7,14 @@ WORKDIR /app
 # Copiar el archivo requirements.txt al contenedor
 COPY requirements.txt .
 
+COPY roboflow .
+
+COPY 01 .
+
 # Instalar las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
 
 # Copiar el contenido actual de la carpeta de la aplicación en el contenedor
 COPY . .
