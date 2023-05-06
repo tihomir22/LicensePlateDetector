@@ -74,6 +74,8 @@ class PredictLicensePlate:
             image=imutils.rotate(image,angle=rotationApplied)
             TabImgSelect =self.DetectLicenseWithYolov8(image)
             rotationApplied = rotationApplied + 15
+        if len(TabImgSelect) == 0: 
+            raise ValueError("No license plate detected! Check your image.")
         
         image=TabImgSelect[0]  
             

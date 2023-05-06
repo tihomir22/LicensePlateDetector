@@ -14,7 +14,7 @@ COPY 01 .
 # Instalar las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN apt-get update && apt-get install -y libgl1-mesa-glx
+RUN apt-get update && apt-get install -y libgl1-mesa-glx && apt-get install -y tesseract-ocr
 
 # Copiar el contenido actual de la carpeta de la aplicación en el contenedor
 COPY . .
@@ -23,4 +23,4 @@ COPY . .
 EXPOSE 5000
 
 # Ejecutar el servidor con gunicorn
-CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000", "--workers", "4"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000"]
