@@ -43,9 +43,8 @@ def universalUploadb64():
         img_bytes = base64.b64decode(filestr)
         img_stream = BytesIO(img_bytes)
         imgArray = cv2.imdecode(np.frombuffer(img_stream.read(), np.uint8), cv2.IMREAD_COLOR)
-        stringJson = instance.doPredict(imgArray).to_json(orient='records')
-        df_obj = json.loads(stringJson)
-        return jsonify(df_obj)
+        res = instance.doPredict(imgArray)
+        return res[0]
     except Exception as e:
         error_message = str(e)
         abort(400, description=error_message)
@@ -55,9 +54,8 @@ def universalUpload():
     try:
         file = request.files['file']
         imgArray = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
-        stringJson = instance.doPredict(imgArray).to_json(orient='records')
-        df_obj = json.loads(stringJson)
-        return jsonify(df_obj)
+        res = instance.doPredict(imgArray)
+        return res[0]
     except Exception as e:
         error_message = str(e)
         abort(400, description=error_message)
