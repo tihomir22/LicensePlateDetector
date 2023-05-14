@@ -1,12 +1,8 @@
 ultralytics
 Flask
 gunicorn
-pytesseract
-tesseract
 opencv-python
 numpy
-parabolic
-imutils
 scikit-image
 flask_cors
 pandas
