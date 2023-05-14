@@ -10,3 +10,5 @@ imutils
 scikit-image
 flask_cors
 pandas
+keras
+tensorflow

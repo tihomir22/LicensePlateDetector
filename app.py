@@ -1,35 +1,21 @@
 import os
-from ultralytics import YOLO
 from flask import Flask
-import yaml
-from predictFn import PredictLicensePlate
-import re
+from predictFnCNN import PredictLicensePlateCNN
 import cv2
 from flask import Flask,request,jsonify,abort
 from flask_cors import CORS
 from io import BytesIO
 import base64
 import numpy as np
-import json
-import pandas as pd
 
 app = Flask(__name__)
 CORS(app, origins=["*"])
-
-nombre_fichero = "licence_data.yaml"
-with open(nombre_fichero, "r") as f:
-    data = yaml.load(f, Loader=yaml.FullLoader)
-ruta_actual_abs = os.path.abspath("roboflow")
-data["path"] = ruta_actual_abs
-data["train"] = ruta_actual_abs+"/train/images"
-data["val"]= ruta_actual_abs+"/valid/images"
-
-with open(nombre_fichero, "w") as f:
-    yaml.dump(data, f)
     
-dirnameYolo=os.path.abspath("01/detect/train/weights/best.pt")
-model = YOLO(os.path.join(dirnameYolo))
-instance = PredictLicensePlate(model)
+#dirnameYolo=os.path.abspath("01/detect/train/weights/best.pt")
+#model = YOLO(os.path.join(dirnameYolo))
+#DECPRECATED OCR
+#instance = PredictLicensePlate(model)
+instance = PredictLicensePlateCNN("yoloBest.pt","model_LicensePlate_2")
 
 @app.route("/")
 def hello_world():
