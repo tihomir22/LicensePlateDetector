@@ -68,7 +68,8 @@ class PredictLicensePlateCNN:
             output.append(character) #storing the result in a list
             
         plate_number = ''.join(output)
-        
+        if len(plate_number) > 7:
+            plate_number = plate_number[-7:]
         return plate_number
 
     def find_contours(self, dimensions, img) :
@@ -176,8 +177,8 @@ class PredictLicensePlateCNN:
             maxValue=255.0, 
             adaptiveMethod=cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
             thresholdType=cv2.THRESH_BINARY_INV, 
-            blockSize=19, 
-            C=9
+            blockSize=29, #19
+            C=3 #9
         )
         #Detectamos los contornos de las letras
         contours, _= cv2.findContours(
@@ -205,7 +206,7 @@ class PredictLicensePlateCNN:
         #Filtramos los contornos de las letras dependiendo de un tamaño / area (Para evitar letras pequeñas como el simbolo del pais)
         MIN_AREA = 80
         MIN_WIDTH, MIN_HEIGHT = 2, 8
-        MIN_RATIO, MAX_RATIO = 0.4, 1.0
+        MIN_RATIO, MAX_RATIO = 0.15, 1.0
 
         possible_contours = []
 
@@ -385,7 +386,7 @@ class PredictLicensePlateCNN:
         else:
             return img_result
 
-img_ori = cv2.imread("imagenesCochesCarteles\car996_05.jpg")
-INSTANCE = PredictLicensePlateCNN("yoloBest.pt","model_LicensePlate_4")
-result = INSTANCE.doPredict(img_ori)
-print(result)
+#img_ori = cv2.imread("car809_13.jpg")
+#INSTANCE = PredictLicensePlateCNN("yoloBest.pt","model_LicensePlate_5")
+#result = INSTANCE.doPredict(img_ori)
+#print(result)
