@@ -296,6 +296,7 @@ class PredictLicensePlateCNN:
 
         plate_imgs = []
         plate_infos = []
+        img_result = ""
 
         for i, matched_chars in enumerate(matched_result):
             sorted_chars = sorted(matched_chars, key=lambda x: x['cx'])
@@ -377,12 +378,14 @@ class PredictLicensePlateCNN:
                 _, img_result = cv2.threshold(img_result, thresh=0.0, maxval=255.0, type=cv2.THRESH_BINARY | cv2.THRESH_OTSU)
                 img_result = cv2.copyMakeBorder(img_result, top=10, bottom=10, left=10, right=10, borderType=cv2.BORDER_CONSTANT, value=(0,0,0))
                 break
+        if len(img_result) > 0:
+            img = 255-img_result
+            char = self.segment_characters(img)
+            return char
+        else:
+            return img_result
 
-        img = 255-img_result
-        char = self.segment_characters(img)
-        return char
-
-#img_ori = cv2.imread("car809_13.jpg")
-#INSTANCE = PredictLicensePlateCNN("yoloBest.pt","model_LicensePlate_2")
-#result = INSTANCE.doPredict(img_ori)
-#print(result)
+img_ori = cv2.imread("imagenesCochesCarteles\car996_05.jpg")
+INSTANCE = PredictLicensePlateCNN("yoloBest.pt","model_LicensePlate_4")
+result = INSTANCE.doPredict(img_ori)
+print(result)

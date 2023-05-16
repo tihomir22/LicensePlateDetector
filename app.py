@@ -8,6 +8,7 @@ from io import BytesIO
 import base64
 import numpy as np
 
+
 app = Flask(__name__)
 CORS(app, origins=["*"])
     
