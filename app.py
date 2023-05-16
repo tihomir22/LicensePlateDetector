@@ -31,7 +31,7 @@ def universalUploadb64():
         img_stream = BytesIO(img_bytes)
         imgArray = cv2.imdecode(np.frombuffer(img_stream.read(), np.uint8), cv2.IMREAD_COLOR)
         res = instance.doPredict(imgArray)
-        return res[0]
+        return res
     except Exception as e:
         error_message = str(e)
         abort(400, description=error_message)
@@ -42,7 +42,7 @@ def universalUpload():
         file = request.files['file']
         imgArray = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
         res = instance.doPredict(imgArray)
-        return res[0]
+        return res
     except Exception as e:
         error_message = str(e)
         abort(400, description=error_message)
