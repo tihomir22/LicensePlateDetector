@@ -1,22 +1,24 @@
 import os
+from ultralytics import YOLO
 from flask import Flask
-from predictFnCNN import PredictLicensePlateCNN
+import yaml
+from predictFn import PredictLicensePlate
+import re
 import cv2
 from flask import Flask,request,jsonify,abort
 from flask_cors import CORS
 from io import BytesIO
 import base64
 import numpy as np
-
+import json
+import pandas as pd
 
 app = Flask(__name__)
 CORS(app, origins=["*"])
-    
-#dirnameYolo=os.path.abspath("01/detect/train/weights/best.pt")
-#model = YOLO(os.path.join(dirnameYolo))
-#DECPRECATED OCR
-#instance = PredictLicensePlate(model)
-instance = PredictLicensePlateCNN("yoloBest.pt","model_LicensePlate_2")
+
+dirnameYolo=os.path.abspath("yoloBest.pt")
+model = YOLO(os.path.join(dirnameYolo))
+instance = PredictLicensePlate(model)
 
 @app.route("/")
 def hello_world():
@@ -31,7 +33,7 @@ def universalUploadb64():
         img_stream = BytesIO(img_bytes)
         imgArray = cv2.imdecode(np.frombuffer(img_stream.read(), np.uint8), cv2.IMREAD_COLOR)
         res = instance.doPredict(imgArray)
-        return res
+        return res[0]
     except Exception as e:
         error_message = str(e)
         abort(400, description=error_message)
@@ -42,7 +44,7 @@ def universalUpload():
         file = request.files['file']
         imgArray = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
         res = instance.doPredict(imgArray)
-        return res
+        return res[0]
     except Exception as e:
         error_message = str(e)
         abort(400, description=error_message)
