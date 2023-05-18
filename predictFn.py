@@ -18,6 +18,7 @@ import re
 import imutils
 from skimage.transform import radon
 import numpy
+from PIL import Image
 from numpy import  mean, array, blackman, sqrt, square
 from numpy.fft import rfft
 
@@ -37,6 +38,14 @@ class PredictLicensePlate:
     def DetectLicenseWithYolov8 (self,img):
         TabcropLicense=[]
         results = self.model.predict(img)
+        
+        
+        
+        # imagen_pil = Image.fromarray(results[0][1])
+        # imagen_pil.save("imagen2.png")
+        
+        
+        print(len(results[0]))
         result=results[0]
         xyxy= result.boxes.xyxy.cpu().numpy()
         confidence= result.boxes.conf.cpu().numpy()
@@ -54,6 +63,8 @@ class PredictLicensePlate:
             if label == "vehicle":continue
             cropLicense=out_image[int(box[1]):int(box[3]),int(box[0]):int(box[2])]
             #cv2.imshow("Crop", cropLicense)
+            imagen_pil = Image.fromarray(cropLicense)
+            imagen_pil.save("imagen.png")
             #cv2.waitKey(0)
             TabcropLicense.append(cropLicense)
 
@@ -99,7 +110,8 @@ class PredictLicensePlate:
     def doPredict(self,image):
         rotationApplied = 0
         TabImgSelect =self.DetectLicenseWithYolov8(image)
-
+        print(rotationApplied)
+        
         while len(TabImgSelect) == 0 and rotationApplied < 360:
             image=imutils.rotate(image,angle=rotationApplied)
             TabImgSelect =self.DetectLicenseWithYolov8(image)
@@ -128,12 +140,12 @@ class PredictLicensePlate:
         import pandas as pd
         
         for y in range(len(TabLicensesFounded)):
-            #matricula = TabLicensesFounded[y]
-            #matricula = self.agregar_padding(matricula)
+            matricula = TabLicensesFounded[y]
+           # matricula = self.agregar_padding(matricula)
             #matricula = matricula[:-2][-3:]
             #matricula = self.reemplazar_letras_numeros(matricula)
-            #print("Matricula A "+ str(matricula))
-            #rows.append({"Matricula detectada":matricula,"confianza":ContLicensesFounded[y],"esValida":None})
+            print("Matricula A "+ str(matricula))
+            rows.append({"Matricula detectada":matricula,"confianza":ContLicensesFounded[y],"esValida":None})
             if ContLicensesFounded[y] > contmax:
                 contmax=ContLicensesFounded[y]
                 licensemax=TabLicensesFounded[y]
@@ -143,9 +155,9 @@ class PredictLicensePlate:
         df = df[df['esValida']==True]
         matricula = licensemax
         print("Matricula B "+ str(matricula))
-        matricula = self.agregar_padding(matricula)
-        matricula = matricula[:-2][-3:]
-        matricula = self.reemplazar_letras_numeros(matricula)
+        #matricula = self.agregar_padding(matricula)
+        #matricula = matricula[:-2][-3:]
+        #matricula = self.reemplazar_letras_numeros(matricula)
         if df.shape[0] == 0:
             rows = []
             rows.append({"Matricula detectada":matricula,"confianza":1,"esValida":None})

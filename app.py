@@ -44,7 +44,7 @@ def universalUpload():
     try:
         file = request.files['file']
         imgArray = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
-        return instance.doPredict(imgArray).to_json(orient='records')
+        return instance.doPredict(imgArray)
     except Exception as e:
         error_message = str(e)
         print(error_message)
