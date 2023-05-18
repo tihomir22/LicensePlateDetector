@@ -106,21 +106,8 @@ class PredictLicensePlate:
             else:
                 texto_modificado += caracter
         return texto_modificado
-
-    def doPredict(self,image):
-        rotationApplied = 0
-        TabImgSelect =self.DetectLicenseWithYolov8(image)
-        print(rotationApplied)
-        
-        while len(TabImgSelect) == 0 and rotationApplied < 360:
-            image=imutils.rotate(image,angle=rotationApplied)
-            TabImgSelect =self.DetectLicenseWithYolov8(image)
-            rotationApplied = rotationApplied + 15
-        if len(TabImgSelect) == 0: 
-            raise ValueError("No license plate detected! Check your image.")
-        
-        image=TabImgSelect[0]  
-            
+    
+    def getLicenseNumber(self,image):  
         x_off=3
         y_off=2
                 
@@ -164,6 +151,33 @@ class PredictLicensePlate:
             df = pd.DataFrame(rows,columns=["Matricula detectada", "confianza", "esValida"])
         
         return df['Matricula detectada'][0]
+    
+    def contiene_numeros(self,cadena):
+        return bool(re.search(r'\d', cadena))
+
+    def doPredict(self,image):
+        rotationApplied = 0
+        TabImgSelect =self.DetectLicenseWithYolov8(image)
+        matricula = self.getLicenseNumber(TabImgSelect[0])
+        MAX_TRIES = 50
+        tries = 0
+   
+        while (len(TabImgSelect) == 0 and rotationApplied < 360) or not self.contiene_numeros(matricula) or not matricula[0:2]=="AC":
+            image=imutils.rotate(image,angle=rotationApplied)
+            TabImgSelect =self.DetectLicenseWithYolov8(image)
+            if len(TabImgSelect)>0:
+                matricula = self.getLicenseNumber(TabImgSelect[0])
+            rotationApplied = rotationApplied + 15
+            tries = tries + 1
+            if tries > MAX_TRIES:
+                break
+            
+        if len(TabImgSelect) == 0: 
+            raise ValueError("No license plate detected! Check your image.")
+        #matricula = self.agregar_padding(matricula)
+        matricula = matricula[:-2][-3:]
+        matricula = self.reemplazar_letras_numeros(matricula)
+        return matricula
     
 
 
