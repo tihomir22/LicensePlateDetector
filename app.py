@@ -24,6 +24,7 @@ instance = PredictLicensePlate(model)
 def hello_world():
     return "<p>Hello, World!</p>"
 
+
 @app.route('/predict-image-b64',methods=['POST'])
 def universalUploadb64():
     try:
@@ -32,10 +33,10 @@ def universalUploadb64():
         img_bytes = base64.b64decode(filestr)
         img_stream = BytesIO(img_bytes)
         imgArray = cv2.imdecode(np.frombuffer(img_stream.read(), np.uint8), cv2.IMREAD_COLOR)
-        res = instance.doPredict(imgArray)
-        return res[0]
+        return instance.doPredict(imgArray)
     except Exception as e:
         error_message = str(e)
+        print(error_message)
         abort(400, description=error_message)
     
 @app.route('/predict-image',methods=['POST'])
@@ -43,9 +44,9 @@ def universalUpload():
     try:
         file = request.files['file']
         imgArray = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
-        res = instance.doPredict(imgArray)
-        return res[0]
+        return instance.doPredict(imgArray).to_json(orient='records')
     except Exception as e:
         error_message = str(e)
+        print(error_message)
         abort(400, description=error_message)
     
